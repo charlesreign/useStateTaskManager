@@ -7,6 +7,7 @@ import './TaskManager.css'
 const TaskManager = () => {
     const [name, setName] = useState("")
     const [date, setDate] = useState("")
+    const [description, setDescription] = useState("")
     // const [tasks, setTasks] = useState([])
 
     const [tasks, setTasks] = useLocalStorage("tasks", [])
@@ -18,7 +19,7 @@ const TaskManager = () => {
 
     useEffect(() => {
         nameInputRef.current.focus()
-    })
+    },[])
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -29,13 +30,14 @@ const TaskManager = () => {
             setTasks(
                 tasks.map((task) => {
                     if (task.id === taskID) {
-                        return {...task, name: name, date: date, complete: false}
+                        return {...task, name: name, date: date, description: description, complete: false}
                     }
                     return task
                 })
             )
             setName("")
             setDate("")
+            setDescription("")
             setIsEditing(false)
             setTaskID(null)
         }
@@ -44,11 +46,13 @@ const TaskManager = () => {
                 id: Date.now(),
                 name: name,
                 date: date,
+                description: description,
                 complete: false
             }
             setTasks([...tasks, newTask])
             setName("")
             setDate("")
+            setDescription("")
 
         }
     }
@@ -59,6 +63,7 @@ const TaskManager = () => {
         setTaskID(id)
         setName(thisTask.name)
         setDate(thisTask.date)
+        setDescription(thisTask.description)
     }
 
     const deleteTask = (id) => {
@@ -106,6 +111,18 @@ return (
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
             />
+            </div>
+            <div>
+            {/* <label htmlFor="description">Description:</label> */}
+            <textarea
+                name='description' 
+                placeholder='Task description' 
+                rows={8}
+                cols={35}
+                value={description} 
+                onChange={(e) => setDescription(e.target.value)}
+            >
+            </textarea>
             </div>
             <button className="--btn --btn-success --btn-block">
             {isEditing ? "Edit Task" : "Save Task"}
